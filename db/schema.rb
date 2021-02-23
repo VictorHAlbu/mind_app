@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_23_180541) do
+ActiveRecord::Schema.define(version: 2021_02_23_182038) do
 
   create_table "contents", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
@@ -19,6 +19,15 @@ ActiveRecord::Schema.define(version: 2021_02_23_180541) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_contents_on_user_id"
+  end
+
+  create_table "tags", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "user_id"], name: "index_tags_on_name_and_user_id", unique: true
+    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
@@ -34,4 +43,5 @@ ActiveRecord::Schema.define(version: 2021_02_23_180541) do
   end
 
   add_foreign_key "contents", "users"
+  add_foreign_key "tags", "users"
 end
