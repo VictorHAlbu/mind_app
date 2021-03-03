@@ -1,7 +1,7 @@
 class ContentsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_content, only: [:show, :edit, :update, :destroy]
-
+    
     def index
        @contents = current_user.contents
     end
@@ -23,8 +23,11 @@ class ContentsController < ApplicationController
     end
 
     def update
-
         if @content.update(content_params)
+            tags = tags_params.map do |tag_name|
+            current_user.tags.where(name: tag_name).first_or_initialize
+        end
+        byebug
             redirect_to contents_path, notice: 'Conteudo foi atualizado com sucesso'
         else
             render :edit
@@ -41,6 +44,10 @@ class ContentsController < ApplicationController
     private
     def set_content
         @content = Content.find(params[:id])
+    end
+    #metodo tags params lista de tags permite um array de tags e a tag se ela tiver em branco
+    def tags_params
+        params.require(:content).permit(tags: [])[:tags].reject(&:blan?)
     end
 
     def content_params
