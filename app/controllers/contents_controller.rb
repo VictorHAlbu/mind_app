@@ -16,6 +16,7 @@ class ContentsController < ApplicationController
         @content = current_user.contents.build(content_params)
 
         if @content.save
+            associate_tags!
             redirect_to contents_path, notice: 'Conteudo foi criado com sucesso'
         else
             render :new
@@ -24,12 +25,7 @@ class ContentsController < ApplicationController
 
     def update
         if @content.update(content_params)
-            tags = tags_params.map do |tag_name|
-            current_user.tags.where(name: tag_name).first_or_initialize
-            #itera e filtra as tags já existentes | first_or_initialize > casoa tags exista first pega a primeira, se não existir cria
-        end
-            @content.tags = tags
-            
+            associate_tags!
             redirect_to contents_path, notice: 'Conteudo foi atualizado com sucesso'
         else
             render :edit
@@ -49,12 +45,19 @@ class ContentsController < ApplicationController
     end
     #metodo tags params lista de tags permite um array de tags e a tag se ela tiver em branco
     def tags_params
-        params.require(:content).permit(tags: [])[:tags].reject(&:blanks?)
+        params.require(:content).permit(tags: [])[:tags].reject(&:blank?)
         #retorna todas as tags que o osuario enviou via front e elimina as vazias
     end
 
     def content_params
         params.require(:content).permit(:title, :description)
+    end
+
+    def associate_tags!
+        tags = tags_params.map do |tag_name|
+            current_user.tags.where(name: tag_name).first_or_initialize
+        end
+        @content.tags = tags
     end
     
 end
