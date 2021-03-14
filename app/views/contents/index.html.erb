@@ -1,11 +1,16 @@
-<%= link_to 'New Content', new_content_path %>
-<h1>Contents</h1>
+<%= link_to 'New Content' , new_content_path %>
+    <h1>Contents</h1>
 
-<% @contents.each do |content| %>
-    Title: <%= content.title %>    
-    Description: <%= content.description %> 
-    <%= link_to 'Edit', edit_content_path(content) %>
-    <%= link_to 'Show', content_path(content) %>
-    <%= link_to 'Destroy', content_path(content), method: :delete, data: { confirm: 'Tem certeza que deseja deletar?.' } %>
-    <br> 
-<% end %>
+    <% @contents.each do |content| %>
+        <%= link_to ' Edit' , edit_content_path(content) %>
+            <%= link_to 'Show' , content_path(content) %>
+                <%= link_to 'Destroy' , content_path(content), method: :delete, data: {
+                    confirm: 'Tem certeza que deseja deletar?.' } %>
+                    <strong> Title:</strong>
+                    <%= content.title %>
+                        <strong> Description:</strong>
+                        <%= content.description %>
+                            <strong> Tags:</strong>
+                            <%= content.tags.pluck(:name).join(', ') %>
+    <br>
+    <% end %>
